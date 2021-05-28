@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Libraries
 
-```{r}
+```{r libraries}
 
 library(readr)
 library(sf)
@@ -25,10 +25,30 @@ library(tmap)
 
 ## Import Data
 
-```{r}
+```{r import data}
 
 wildschwein_BE <- read_delim("Data/wildschwein_BE_2056.csv",",") %>%
   st_as_sf(coords = c("E", "N"), crs = 2056, remove = FALSE)
 
 ```
+
+## Task 1: Import and visualize spatial data
+
+```{r import spatial data}
+
+fields <- read_sf("Data/Feldaufnahmen_Fanel.gpkg")
+
+ggplot(fields, aes(fill = Frucht)) +
+  geom_sf() +
+  coord_sf(datum = 2056)
+
+fields
+
+```
+
+Geometry type: Polygon
+Data types of cols: FieldID = dbl, Frucht = chr, geom = Polygon [m]
+CRS: CH1903+ / LV95
+
+
 
