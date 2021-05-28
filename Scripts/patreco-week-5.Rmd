@@ -59,7 +59,7 @@ Filter wildboard data to the months of May to June
 
 wildschwein_BE
 
-wildschwein_summer <- wildschwein_BE %>% 
+wildschwein_filter <- wildschwein_BE %>% 
   mutate(month = month(DatetimeUTC)) %>% 
   filter(month == 5 | month == 6)
 
@@ -71,7 +71,7 @@ Overlay the filtered dataset with field data to verify spatial overlap
 
 ggplot() +
   geom_sf(data = fields, aes(fill = Frucht)) +
-  geom_point(data = wildschwein_summer, aes(E, N, colour = TierID)) +
+  geom_point(data = wildschwein_filter, aes(E, N, colour = TierID)) +
   coord_sf(datum = 2056)
 
 ```
@@ -80,8 +80,38 @@ Create spatial join between wildboar data and field data
 
 ```{r spatial join}
 
-spatial_join <- st_join(x = wildschwein_summer, y = fields)
+wildschwein_join <- st_join(x = wildschwein_filter, y = fields)
 
 ```
 
+## Task 3: Explore annotated trajectories
+
+```{r explore trajectories}
+
+wildschwein_sum <- wildschwein_join %>% 
+  st_drop_geometry() %>%
+  mutate(hour = hour(DatetimeUTC)) %>% 
+  group_by(TierName, Frucht, hour) %>% 
+  summarise(n = n()) %>%
+  group_by(TierName, hour) %>% # regroup by animal and hour to calculate relative sums 
+  mutate(n_tot = sum(n),
+         sum_rel = n/n_tot)
+
+# Bar charts
+ggplot(wildschwein_sum, aes(hour, sum_rel, fill = Frucht)) +
+  geom_col() +
+  facet_wrap(~ TierName) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Time (rounded to the nearest hour", y = "Percentage")
+
+# Polar chart
+ggplot(wildschwein_sum, aes(hour, sum_rel, fill = Frucht)) +
+  geom_col() +
+  facet_wrap(~ TierName) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Time (rounded to the nearest hour", y = "Percentage") +
+  coord_polar (start = -0.1)
+
+
+```
 
