@@ -115,3 +115,19 @@ ggplot(wildschwein_sum, aes(hour, sum_rel, fill = Frucht)) +
 
 ```
 
+## Task 4: Import ans visualize vegetation index (raster data)
+
+Visualizing raster data using tmap
+
+```{r}
+
+vegetation <- terra::rast("data/vegetationshoehe_LFI.tif")
+vegetation
+plot(vegetation)
+
+  tm_shape(vegetation) +
+    tm_raster(palette = "viridis") +
+    tm_layout(legend.outside = TRUE)
+  
+```
+
