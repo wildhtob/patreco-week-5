@@ -51,4 +51,37 @@ Data types of cols: FieldID = dbl, Frucht = chr, geom = Polygon [m]
 CRS: CH1903+ / LV95
 
 
+## Task 2: Annotate trajectories from vector data
+
+Filter wildboard data to the months of May to June
+
+```{r filter wildboar data}
+
+wildschwein_BE
+
+wildschwein_summer <- wildschwein_BE %>% 
+  mutate(month = month(DatetimeUTC)) %>% 
+  filter(month == 5 | month == 6)
+
+```
+
+Overlay the filtered dataset with field data to verify spatial overlap
+
+```{r overlay wildboar with field data}
+
+ggplot() +
+  geom_sf(data = fields, aes(fill = Frucht)) +
+  geom_point(data = wildschwein_summer, aes(E, N, colour = TierID)) +
+  coord_sf(datum = 2056)
+
+```
+
+Create spatial join between wildboar data and field data
+
+```{r spatial join}
+
+spatial_join <- st_join(x = wildschwein_summer, y = fields)
+
+```
+
 
