@@ -151,6 +151,7 @@ wildschwein_sum2 <- wildschwein_raster %>%
 Visualize vegetation height by animal and hour
 
 ```{r visualise raster data}
+
 # Bar charts
 ggplot(wildschwein_sum2, aes(hour, sum_rel, fill = vegetationshoehe_LFI)) +
   geom_col() +
@@ -167,6 +168,7 @@ ggplot(wildschwein_sum2, aes(hour, sum_rel, fill = vegetationshoehe_LFI)) +
    scale_fill_gradient(low = "blue", high = "yellow") +
   labs(x = "Time (rounded to the nearest hour)", y = "Percentage") +
   coord_polar (start = -0.1)
+
 ```
 
 
